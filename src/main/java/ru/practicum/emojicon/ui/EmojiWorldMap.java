@@ -21,6 +21,8 @@ public class EmojiWorldMap implements Drawable, Controller {
 
     private boolean visible = false;
 
+    private Map<Point, TextColor> mapFrameCache;
+
     public EmojiWorldMap(Engine engine, EmojiWorld world) {
         this.engine = engine;
         this.world = world;
@@ -46,6 +48,7 @@ public class EmojiWorldMap implements Drawable, Controller {
     @Override
     public void drawFrame(Frame someFrame) {
         if(!visible){
+            mapFrameCache = null;
             return;
         }
         RootFrame frame = RootFrame.extend(someFrame);
@@ -58,7 +61,13 @@ public class EmojiWorldMap implements Drawable, Controller {
         Area area = new Area(size.getColumns() / 2 - mapWidth / 2, size.getRows() / 2 - mapHeight / 2,
                 size.getColumns() / 2 + mapWidth / 2, size.getRows() / 2 + mapHeight / 2);
         area = area.move(0, -1);
-        drawMap(new PixelFrame(frame, area.getLeft() + 1, area.getTop() + 1, area.getRight() - 2, area.getBottom() - 1));
+        PixelFrame mapFrame = new PixelFrame(frame, area.getLeft() + 1, area.getTop() + 1, area.getRight() - 2, area.getBottom() - 1);
+        if(mapFrameCache == null) {
+            drawMap(mapFrame);
+            mapFrameCache = mapFrame.getBitmap();
+        } else {
+            redrawMap(mapFrame);
+        }
         //draw box frame
         graphics.drawLine(area.getLeft(), area.getTop(), area.getRight(), area.getTop(), '─');
         graphics.drawLine(area.getLeft(), area.getBottom(), area.getRight(), area.getBottom(), '─');
@@ -71,6 +80,14 @@ public class EmojiWorldMap implements Drawable, Controller {
 
         String mapTitle = "═[ КАРТА ]═";
         graphics.putString(size.getColumns() / 2 - mapTitle.length() / 2, area.getTop(), mapTitle);
+    }
+
+    private void redrawMap(PixelFrame mapFrame) {
+        mapFrameCache.entrySet().forEach(pixel -> {
+            mapFrame.setPosition(pixel.getKey().getX(), pixel.getKey().getY());
+            mapFrame.setColor(pixel.getValue());
+            mapFrame.paint();
+        });
     }
 
     private void drawMap(PixelFrame frame) {

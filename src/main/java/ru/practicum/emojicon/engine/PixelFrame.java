@@ -184,4 +184,8 @@ public class PixelFrame implements Frame {
         }
         rootFrame.setColor(color);
     }
+
+    public Map<Point, TextColor> getBitmap() {
+        return subPixelMap;
+    }
 }

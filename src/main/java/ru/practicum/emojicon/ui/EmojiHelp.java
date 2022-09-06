@@ -35,12 +35,12 @@ public class EmojiHelp implements Drawable {
         text.setBackgroundColor(TextColor.ANSI.BLACK);
         text.setForegroundColor(TextColor.ANSI.WHITE);
         String arrows = Stream.of(EmojiManager.getForAlias("arrow_left"),
-                        EmojiManager.getForAlias("arrow_right"),
+                        EmojiManager.getForAlias("arrow_down"),
                         EmojiManager.getForAlias("arrow_up"),
-                        EmojiManager.getForAlias("arrow_down"))
+                        EmojiManager.getForAlias("arrow_right"))
                 .map(Emoji::getUnicode)
                 .collect(Collectors.joining(""));
-        text.putString(0, frame.getBottom(), " " + arrows + " [WASD]");
+        text.putString(0, frame.getBottom(), " WASD [" + arrows + "] ");
         String escape = " M [Карта] | Esc [Выход] ";
         text.putString(frame.getRight() - escape.length() + 1, frame.getBottom(), escape);
 
