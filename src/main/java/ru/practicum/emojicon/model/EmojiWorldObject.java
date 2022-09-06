@@ -2,6 +2,7 @@ package ru.practicum.emojicon.model;
 
 import ru.practicum.emojicon.engine.*;
 
+import java.util.Set;
 import java.util.UUID;
 
 public class EmojiWorldObject implements Boxed, Drawable, Controllable, Entity {
@@ -64,7 +65,7 @@ public class EmojiWorldObject implements Boxed, Drawable, Controllable, Entity {
         int nextTop = y + step.getY();
         int nextRight = nextLeft + inner.getWidth();
         int nextBottom = nextTop + inner.getHeight();
-        if(parent.isFreeArea(nextLeft, nextTop, nextRight, nextBottom)){
+        if(parent.isFreeArea(nextLeft, nextTop, nextRight, nextBottom, Set.of(this.id))){
             x = nextLeft;
             y = nextTop;
             return true;

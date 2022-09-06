@@ -101,9 +101,11 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
     }
 
     @Override
-    public boolean isFreeArea(int left, int top, int right, int bottom) {
+    public boolean isFreeArea(int left, int top, int right, int bottom, Set<UUID> ignoreObjects) {
         Set<Point> landscapeHardPoints = new Area(left, top, right, bottom).getCorners().stream().filter(p -> landscape.isWater(p) || landscape.isMountain(p)).collect(Collectors.toSet());
-        return left >= 0 && top >= 0 && right <= getWidth() && bottom <= getHeight() && landscapeHardPoints.isEmpty();
+        Area thisArea = new Area(left, top, right, bottom);
+        Optional<EmojiWorldObject> localObject = objects.stream().filter(obj -> !ignoreObjects.contains(obj.getId())).filter(obj -> thisArea.overlaps(obj.getArea())).findAny();
+        return left >= 0 && top >= 0 && right <= getWidth() && bottom <= getHeight() && landscapeHardPoints.isEmpty() && localObject.isEmpty();
     }
 
     private void addWorldObject(EmojiWorldObject obj) {
