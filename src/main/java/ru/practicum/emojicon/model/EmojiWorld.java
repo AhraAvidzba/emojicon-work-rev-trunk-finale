@@ -21,7 +21,7 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
     private EmojiWorldLandscape landscape;
 
     public EmojiWorld() {
-        this.initEarth(2048, 2048);
+        this.initEarth(3096, 3096);
         log.info("world created");
     }
 

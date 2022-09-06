@@ -50,7 +50,7 @@ public class EmojiWorldLandscape {
     }
 
     private static double landFunction(double kx, double ky, double ax, double ay) {
-        return 1 - (ky - ay) * Math.cos(12 * kx - ay) / 9;
+        return 1 - Math.sin(5 * ky * kx - ay) * Math.cos(1.75 * kx - ax) / 9;
     }
 
     public static WorldLandscapeType getLandscapeType(int depth) {
