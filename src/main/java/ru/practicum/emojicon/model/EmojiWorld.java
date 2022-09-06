@@ -101,6 +101,8 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
                 pt = new Point(1, 0);
             } else if (ARROW_UP_FN.apply(key)) {
                 pt = new Point(0, -1);
+            } else if (key.getKeyType().equals(KeyType.Character) && key.getCharacter().equals(' ')){
+                obj.action();
             }
             if (pt != null) {
                 obj.move(pt);

@@ -73,6 +73,13 @@ public class EmojiWorldObject implements Boxed, Drawable, Controllable, Entity {
         }
     }
 
+    @Override
+    public void action() {
+        if(inner instanceof Active){
+            ((Active) inner).action();
+        }
+    }
+
     public int getWidth() {
         return inner.getWidth();
     }
