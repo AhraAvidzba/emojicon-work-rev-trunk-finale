@@ -24,7 +24,7 @@ public class EmojiNatureObject extends EmojiObject {
 
     public EmojiNatureObject(int width, int height) {
         super(width, height);
-        fillRecursive(new Point((int) round(random() * width), (int) round(random() * height)));
+        fillRecursive(new Point((int) round(random() * (width - 1)), (int) round(random() * (height - 1))));
     }
 
     private void fillRecursive(Point pt) {
@@ -75,10 +75,10 @@ public class EmojiNatureObject extends EmojiObject {
     }
 
     private Point nextFreePoint() {
-        for (int x = 0; x <= getWidth(); x++){
+        for (int x = 0; x < getWidth(); x++){
             List<TextCharacter> column = x < objShape.size() ? objShape.get(x) : null;
             if(column != null){
-                for(int y = 0; y <= getHeight(); y++){
+                for(int y = 0; y < getHeight(); y++){
                     if(y >= column.size() || column.get(y) == null){
                         return new Point(x, y);
                     }
@@ -93,8 +93,8 @@ public class EmojiNatureObject extends EmojiObject {
 
     @Override
     public void drawFrame(Frame frame) {
-        for (int x = 0; x <= getWidth(); x++) {
-            for (int y = 0; y <= getHeight(); y++) {
+        for (int x = 0; x < getWidth(); x++) {
+            for (int y = 0; y < getHeight(); y++) {
                 TextCharacter ch = objShape.get(x).get(y);
                 frame.setPosition(x, y);
                 frame.setFillColor(null);
