@@ -14,6 +14,8 @@ public class RootFrame extends AbstractFrame implements WithContext {
 
     private BiFunction<Integer, Integer, TextColor> transparentColorFn;
 
+    private boolean outOfBounds = false;
+
     public RootFrame(EngineContext context, int right, int bottom) {
         super(0, 0, right, bottom);
         this.context = context;
@@ -30,8 +32,8 @@ public class RootFrame extends AbstractFrame implements WithContext {
 
     //set position for painting
     public void setPosition(int x, int y) {
-        if (x < 0 || x > getRight() || y < 0 || y > getBottom())
-            throw new IllegalArgumentException("position out of bounds");
+        outOfBounds = (x < 0 || x > getRight() || y < 0 || y > getBottom());
+
 
         setPosX(x);
         setPosY(y);

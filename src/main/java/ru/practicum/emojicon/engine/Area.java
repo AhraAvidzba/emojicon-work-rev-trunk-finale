@@ -57,4 +57,23 @@ public class Area implements Boxed {
     public int getHeight(){
         return bottom - top + 1;
     }
+
+    public boolean overlaps(Area that) {
+        Point thisLT = new Point(this.left, this.top);
+        Point thisRB = new Point(this.right, this.bottom);
+        Point thatLT = new Point(that.left, that.top);
+        Point thatRB = new Point(that.right, that.bottom);
+
+        // If one rectangle is on left side of other
+        if (thisLT.getX() > thatRB.getX() || thatLT.getX() > thisRB.getX()) {
+            return false;
+        }
+
+        // If one rectangle is above other
+        if (thisLT.getY() > thatRB.getY() || thatLT.getY() > thisRB.getY()) {
+            return false;
+        }
+
+        return true;
+    }
 }

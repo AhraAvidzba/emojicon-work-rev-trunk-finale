@@ -7,10 +7,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.practicum.emojicon.engine.*;
 import ru.practicum.emojicon.model.landscape.EmojiWorldLandscape;
+import ru.practicum.emojicon.model.nature.EmojiNatureObject;
 
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.*;
 
 public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObjectHolder, Controller {
 
@@ -22,7 +25,29 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
 
     public EmojiWorld() {
         this.initEarth(2048, 2048);
+        this.initNature();
         log.info("world created");
+    }
+
+    private void initNature() {
+        int step = 16;
+        for(int x = 16; x < this.getWidth(); x += step){
+            for(int y = step; y < this.getHeight(); y += step){
+                boolean hasObject = round(random()) == 1;
+                if(!hasObject)
+                    continue;
+
+                int shiftY = (int) max(1, round(random() * 8));
+                int shiftX = (int) max(1, round(random() * 8));
+                int sizeX = (int) max(1, round(random() * 8));
+                int sizeY = (int) max(1, round(random() * 4));
+                if(isFreeArea(x + shiftX, y + shiftY, x + shiftX + sizeX, y + shiftY + sizeY)){
+                    Point pos = new Point(x + shiftX, y + shiftY);
+                    addObject(new EmojiNatureObject(sizeX, sizeY), pos);
+                    log.info("nature object added {} {} {}", sizeX, sizeY, pos);
+                }
+            }
+        }
     }
 
 
@@ -30,6 +55,7 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
         this.setWidth(width);
         this.setHeight(height);
         this.landscape = new EmojiWorldLandscape(width, height);
+        log.info("landscape created");
     }
 
     @Override
@@ -45,7 +71,7 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
         });
         //отсекаем лишние объекты, которые точно не отобразятся
         objects.stream()
-                .filter(obj -> frame.getLeft() <= obj.getLeft() && frame.getRight() >= obj.getRight() && frame.getTop() <= obj.getTop() && frame.getBottom() >= obj.getBottom())
+                .filter(obj -> frame.getArea().overlaps(obj.getArea()))
                 .forEach(obj -> {
                     Point dp = new Point(obj.getX(), obj.getY());
                     TranslatedFrame objFrame = new TranslatedFrame(frame, dp);
@@ -54,8 +80,8 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
     }
 
     private void drawEarth(Frame frame) {
-        for (int x = Math.max(0, frame.getLeft()); x <= Math.min(getWidth(), frame.getRight()); x++) {
-            for (int y = Math.max(0, frame.getTop()); y <= Math.min(getHeight(), frame.getBottom()); y++) {
+        for (int x = max(0, frame.getLeft()); x <= min(getWidth(), frame.getRight()); x++) {
+            for (int y = max(0, frame.getTop()); y <= min(getHeight(), frame.getBottom()); y++) {
                 frame.setPosition(x, y);
                 int depth = landscape.getDepth(x, y);
                 frame.setFillColor(EmojiWorldLandscape.getLandscapeColor(depth));
@@ -127,8 +153,8 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
         Point lt = null;
         Point rb = null;
         while (lt == null) { //но может и зациклиться :)
-            int rx = (int) Math.round(Math.random() * getWidth());
-            int ry = (int) Math.round(Math.random() * getHeight());
+            int rx = (int) round(random() * getWidth());
+            int ry = (int) round(random() * getHeight());
             lt = new Point(rx, ry);
             if (landscape.isGrass(lt)) {
                 int square = 100;

@@ -33,6 +33,7 @@ public class Main {
     public static void main(String[] args) throws Exception {
         EmojiWorld world = new EmojiWorld();
         UUID objectId = world.addObject(new EmojiCat("Tom"), world.getFreeArea().getCorners().get(0));
+        log.info("added a cat {}", objectId);
         world.setSelection(objectId);
 
         Engine engine = new Engine();
