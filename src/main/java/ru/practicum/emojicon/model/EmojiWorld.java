@@ -30,17 +30,20 @@ public class EmojiWorld extends EmojiObject implements EntityResolver, EmojiObje
     }
 
     private void initNature() {
-        int step = 16;
-        for(int x = 16; x < this.getWidth(); x += step){
+        int step = 32;
+        int size = 16;
+        for(int x = step; x < this.getWidth(); x += step){
             for(int y = step; y < this.getHeight(); y += step){
                 boolean hasObject = round(random()) == 1;
                 if(!hasObject)
                     continue;
 
-                int shiftY = (int) max(1, round(random() * 8));
-                int shiftX = (int) max(1, round(random() * 8));
-                int sizeX = (int) max(1, round(random() * 8));
-                int sizeY = (int) max(1, round(random() * 4));
+                int shiftY = (int) max(1, round(random() * step / 2));
+                int shiftX = (int) max(1, round(random() * step / 2));
+                //width of console symbol * 2 == height of console symbol
+                int sizeX = (int) max(1, round(random() * size / 2));
+                int sizeY = (int) max(1, round(random() * size / 4));
+
                 if(isFreeArea(x + shiftX, y + shiftY, x + shiftX + sizeX, y + shiftY + sizeY)){
                     Point pos = new Point(x + shiftX, y + shiftY);
                     addObject(new EmojiNatureObject(sizeX, sizeY), pos);
