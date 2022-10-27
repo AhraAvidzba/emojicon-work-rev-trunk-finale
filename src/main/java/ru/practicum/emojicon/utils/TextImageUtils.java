@@ -4,33 +4,24 @@ import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.graphics.BasicTextImage;
 import com.googlecode.lanterna.graphics.TextImage;
+import eu.maxschuster.dataurl.DataUrl;
+import eu.maxschuster.dataurl.DataUrlSerializer;
+import eu.maxschuster.dataurl.IDataUrlSerializer;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.net.MalformedURLException;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class TextImageUtils {
 
     public static TextImage fromString(String text){
-        BasicTextImage ret;
-        List<List<TextCharacter>> charMatrix = new ArrayList<>();
-        Arrays.stream(text.split("\n")).map(String::chars).forEach(line -> {
-            charMatrix.add(line.mapToObj(ch -> TextCharacter.fromCharacter((char) ch)).flatMap(Arrays::stream).collect(Collectors.toList()));
-        });
-        int maxColumns = 0;
-        for (List<TextCharacter> line : charMatrix) {
-            maxColumns = Math.max(maxColumns, line.size());
-        }
-        int maxRows = charMatrix.size();
-        ret = new BasicTextImage(new TerminalSize(maxColumns, maxRows));
-        ret.setAll(TextCharacter.fromCharacter(' ')[0]);
-        for (int row = 0; row < charMatrix.size(); row++) {
-            List<TextCharacter> line = charMatrix.get(row);
-            for (int column = 0; column < line.size(); column++) {
-                ret.setCharacterAt(column, row, line.get(column));
-            }
-        }
-        return ret;
+        return TextImageConverter.forMimetype("text/plain").getConverterFunction().apply(text.getBytes(StandardCharsets.UTF_8));
+    }
+
+    public static TextImage fromDataURL(String dataUrl) throws MalformedURLException {
+        IDataUrlSerializer serializer = new DataUrlSerializer();
+        DataUrl unserialized = serializer.unserialize(dataUrl);
+        return TextImageConverter.forMimetype(unserialized.getMimeType()).getConverterFunction().apply(unserialized.getData());
     }
 }

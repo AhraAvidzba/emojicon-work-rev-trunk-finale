@@ -15,10 +15,7 @@ import org.slf4j.LoggerFactory;
 import ru.practicum.emojicon.engine.Engine;
 import ru.practicum.emojicon.model.EmojiCat;
 import ru.practicum.emojicon.model.EmojiWorld;
-import ru.practicum.emojicon.ui.EmojiHelp;
-import ru.practicum.emojicon.ui.EmojiSplashCatFace;
-import ru.practicum.emojicon.ui.EmojiTicker;
-import ru.practicum.emojicon.ui.EmojiWorldMap;
+import ru.practicum.emojicon.ui.*;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -42,6 +39,7 @@ public class Main {
             engine.addRoot(new EmojiHelp(engine, world));
             engine.focusRoot();
             engine.addRoot(new EmojiWorldMap(engine, world));
+            engine.addRoot(new EmojiScreenSaver());
         }));
 
         engine.run();

@@ -1,7 +1,9 @@
 package ru.practicum.emojicon.engine;
 
+import com.googlecode.lanterna.TerminalSize;
 import com.googlecode.lanterna.TextCharacter;
 import com.googlecode.lanterna.TextColor;
+import com.googlecode.lanterna.graphics.TextImage;
 import com.vdurmont.emoji.Emoji;
 
 import java.util.HashMap;
@@ -15,7 +17,6 @@ public class PixelFrame implements Frame {
     private final int rootBottom;
 
     private final int rootDx;
-
     private final int rootDy;
     private final int left;
     private final int top;
@@ -100,12 +101,21 @@ public class PixelFrame implements Frame {
 
     @Override
     public void setPosition(int x, int y) {
+        setPositionRoot(x, y);
+    }
+
+    private boolean setPositionRoot(int x, int y) {
         this.posX = x;
         this.posY = y;
         this.rootPosX = x + rootDx;
         this.rootPosY = y / 2 + rootDy;
         this.rootSubpixel = y % 2;
-        rootFrame.setPosition(this.rootPosX, this.rootPosY);
+        if(rootPosX >= rootLeft && rootPosX<= rootRight && rootPosY >= rootTop && rootPosY <= rootBottom) {
+            rootFrame.setPosition(this.rootPosX, this.rootPosY);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Override
@@ -183,5 +193,20 @@ public class PixelFrame implements Frame {
             }
         }
         rootFrame.setColor(color);
+    }
+
+    public void drawImage(TextImage image) {
+        setFillColor(TextColor.ANSI.BLACK);
+        fill();
+        TerminalSize size = image.getSize();
+        for(int x = 0; x < size.getColumns(); x++){
+            for(int y = 0; y < size.getRows(); y++){
+                if(setPositionRoot(x, y)) {
+                    TextCharacter ch = image.getCharacterAt(x, y);
+                    setColor(ch.getForegroundColor());
+                    paint();
+                }
+            }
+        }
     }
 }
